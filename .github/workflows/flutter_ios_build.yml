@@ -15,26 +15,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Flutter
-      - name: Install Flutter
+      # 2️⃣ Install Flutter (force fresh install with Dart 3.9.2)
+      - name: Install Flutter 3.27.3
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.3' # or your version
+          flutter-version: '3.27.3'
+          channel: 'stable'
+          cache: false
 
-      # 3️⃣ Confirm Flutter setup
-      - name: Flutter Doctor
-        run: flutter doctor -v
+      # 3️⃣ Verify Flutter & Dart versions
+      - name: Flutter & Dart version
+        run: |
+          flutter --version
+          dart --version
 
-      # 4️⃣ Install dependencies
+      # 4️⃣ Get dependencies
       - name: Get dependencies
         run: flutter pub get
 
-      # 5️⃣ Build iOS app
+      # 5️⃣ Build iOS app (no signing)
       - name: Build iOS (no codesign)
         run: flutter build ios --release --no-codesign
 
-      # 6️⃣ Upload compiled iOS app artifact
-      - name: Upload iOS build
+      # 6️⃣ Upload compiled iOS app
+      - name: Upload iOS build artifact
         uses: actions/upload-artifact@v4
         with:
           name: ios-release-build
