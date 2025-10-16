@@ -19,8 +19,8 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.3'
-          channel: 'stable'
+          flutter-version: '3.27.0-0.2.pre'
+          channel: 'beta'
 
       # 3️⃣ Confirm Flutter setup
       - name: Flutter Doctor
