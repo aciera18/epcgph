@@ -1,0 +1,41 @@
+name: Flutter iOS Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      # 1️⃣ Checkout your repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup Flutter
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.3' # or your version
+
+      # 3️⃣ Confirm Flutter setup
+      - name: Flutter Doctor
+        run: flutter doctor -v
+
+      # 4️⃣ Install dependencies
+      - name: Get dependencies
+        run: flutter pub get
+
+      # 5️⃣ Build iOS app
+      - name: Build iOS (no codesign)
+        run: flutter build ios --release --no-codesign
+
+      # 6️⃣ Upload compiled iOS app artifact
+      - name: Upload iOS build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-build
+          path: build/ios/iphoneos/

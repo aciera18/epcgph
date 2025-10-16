@@ -1,9 +1,15 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:device_preview/device_preview.dart';
 import 'menu/login_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    DevicePreview(
+      enabled: true, // ✅ Turn on iPhone UI simulation
+      builder: (context) => const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -13,6 +19,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      useInheritedMediaQuery: true,
+      builder: DevicePreview.appBuilder, // ✅ Needed for DevicePreview to work
+      locale: DevicePreview.locale(context),
       title: 'ePCGph Payslip',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
@@ -63,7 +72,6 @@ class _SplashPageState extends State<SplashPage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
-        // 👆 Swipe anywhere to continue
         onHorizontalDragEnd: (details) {
           if (details.primaryVelocity != null &&
               details.primaryVelocity!.abs() > 0) {
@@ -100,7 +108,6 @@ class _SplashPageState extends State<SplashPage>
 
                     const Spacer(),
 
-                    // 🧭 Text + Swipe Animation
                     Padding(
                       padding: const EdgeInsets.only(bottom: 200),
                       child: Column(
@@ -129,8 +136,6 @@ class _SplashPageState extends State<SplashPage>
                               ),
                             ),
                           ),
-
-
                           const SizedBox(height: 8),
                           const Text(
                             '* MOBILE *',
@@ -149,12 +154,9 @@ class _SplashPageState extends State<SplashPage>
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: const [
+                                Icon(Icons.arrow_back_ios_rounded,
+                                    color: Colors.white, size: 20),
                                 SizedBox(width: 8),
-                                Icon(
-                                  Icons.arrow_back_ios_rounded,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
                                 Text(
                                   "Swipe to continue",
                                   style: TextStyle(
@@ -163,11 +165,8 @@ class _SplashPageState extends State<SplashPage>
                                   ),
                                 ),
                                 SizedBox(width: 8),
-                                Icon(
-                                  Icons.arrow_forward_ios_rounded,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
+                                Icon(Icons.arrow_forward_ios_rounded,
+                                    color: Colors.white, size: 20),
                               ],
                             ),
                           ),
@@ -187,7 +186,6 @@ class _SplashPageState extends State<SplashPage>
 
 class MultiWavePainter extends CustomPainter {
   final double animationValue;
-
   MultiWavePainter(this.animationValue);
 
   @override
