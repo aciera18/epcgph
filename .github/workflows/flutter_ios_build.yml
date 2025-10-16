@@ -15,23 +15,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Completely remove old Flutter versions
+      # 2️⃣ Remove any preinstalled Flutter versions
       - name: Remove preinstalled Flutter
         run: |
           sudo rm -rf /Users/runner/hostedtoolcache/flutter
           sudo rm -rf $HOME/flutter
 
-      # 3️⃣ Manually install Flutter 3.27.3 (Dart 3.9.2)
+      # 3️⃣ Install Flutter 3.27.3 (stable)
       - name: Install Flutter 3.27.3
         run: |
           git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter
           cd $HOME/flutter
           git checkout 3.27.3
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
-          flutter --version
-          dart --version
 
-      # 4️⃣ Verify that we are on Flutter 3.27.3 + Dart 3.9.2
+      # 4️⃣ Verify installation (in a new shell so PATH is reloaded)
       - name: Verify Flutter & Dart version
         run: |
           which flutter
@@ -42,11 +40,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # 6️⃣ Build iOS (no codesign)
+      # 6️⃣ Build iOS app (no code signing)
       - name: Build iOS (no codesign)
         run: flutter build ios --release --no-codesign
 
-      # 7️⃣ Upload build artifact
+      # 7️⃣ Upload iOS build artifact
       - name: Upload iOS build artifact
         uses: actions/upload-artifact@v4
         with:
