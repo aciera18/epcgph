@@ -11,12 +11,12 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      # 1️⃣ Checkout repo
+      # 1️⃣ Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Remove any preinstalled Flutter
-      - name: Remove preinstalled Flutter
+      # 2️⃣ Remove preinstalled Flutter SDK
+      - name: Remove system Flutter
         run: sudo rm -rf /Users/runner/hostedtoolcache/flutter
 
       # 3️⃣ Install Flutter 3.27.3 (includes Dart 3.9.2)
@@ -27,22 +27,27 @@ jobs:
           channel: 'stable'
           cache: false
 
-      # 4️⃣ Check versions (must show Dart 3.9.x)
-      - name: Check Flutter & Dart version
+      # 4️⃣ Force PATH to use the newly installed Flutter
+      - name: Add Flutter to PATH
+        run: echo "$HOME/.flutter/bin" >> $GITHUB_PATH
+
+      # 5️⃣ Verify version (should show Dart 3.9.2)
+      - name: Verify Flutter & Dart versions
         run: |
+          which flutter
           flutter --version
           dart --version
 
-      # 5️⃣ Get dependencies
-      - name: Get dependencies
+      # 6️⃣ Install dependencies
+      - name: Run flutter pub get
         run: flutter pub get
 
-      # 6️⃣ Build iOS app without signing
+      # 7️⃣ Build iOS app (no signing)
       - name: Build iOS (no codesign)
         run: flutter build ios --release --no-codesign
 
-      # 7️⃣ Upload iOS build artifact
-      - name: Upload iOS build artifact
+      # 8️⃣ Upload iOS build artifact
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: ios-release-build
