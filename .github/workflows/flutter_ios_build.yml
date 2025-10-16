@@ -11,44 +11,44 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      # 1️⃣ Checkout code
-      - name: Checkout repository
+      # 1️⃣ Checkout your repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Remove preinstalled Flutter SDK
-      - name: Remove system Flutter
-        run: sudo rm -rf /Users/runner/hostedtoolcache/flutter
+      # 2️⃣ Completely remove old Flutter versions
+      - name: Remove preinstalled Flutter
+        run: |
+          sudo rm -rf /Users/runner/hostedtoolcache/flutter
+          sudo rm -rf $HOME/flutter
 
-      # 3️⃣ Install Flutter 3.27.3 (includes Dart 3.9.2)
+      # 3️⃣ Manually install Flutter 3.27.3 (Dart 3.9.2)
       - name: Install Flutter 3.27.3
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.27.3'
-          channel: 'stable'
-          cache: false
+        run: |
+          git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter
+          cd $HOME/flutter
+          git checkout 3.27.3
+          echo "$HOME/flutter/bin" >> $GITHUB_PATH
+          flutter --version
+          dart --version
 
-      # 4️⃣ Force PATH to use the newly installed Flutter
-      - name: Add Flutter to PATH
-        run: echo "$HOME/.flutter/bin" >> $GITHUB_PATH
-
-      # 5️⃣ Verify version (should show Dart 3.9.2)
-      - name: Verify Flutter & Dart versions
+      # 4️⃣ Verify that we are on Flutter 3.27.3 + Dart 3.9.2
+      - name: Verify Flutter & Dart version
         run: |
           which flutter
           flutter --version
           dart --version
 
-      # 6️⃣ Install dependencies
-      - name: Run flutter pub get
+      # 5️⃣ Install dependencies
+      - name: Install dependencies
         run: flutter pub get
 
-      # 7️⃣ Build iOS app (no signing)
+      # 6️⃣ Build iOS (no codesign)
       - name: Build iOS (no codesign)
         run: flutter build ios --release --no-codesign
 
-      # 8️⃣ Upload iOS build artifact
-      - name: Upload build artifact
+      # 7️⃣ Upload build artifact
+      - name: Upload iOS build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ios-release-build
+          name: ios-build
           path: build/ios/iphoneos/
