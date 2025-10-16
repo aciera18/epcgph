@@ -11,11 +11,15 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      # 1️⃣ Checkout your repo
+      # 1️⃣ Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Install Flutter (force fresh install with Dart 3.9.2)
+      # 2️⃣ Remove any preinstalled Flutter
+      - name: Remove preinstalled Flutter
+        run: sudo rm -rf /Users/runner/hostedtoolcache/flutter
+
+      # 3️⃣ Install Flutter 3.27.3 (includes Dart 3.9.2)
       - name: Install Flutter 3.27.3
         uses: subosito/flutter-action@v2
         with:
@@ -23,21 +27,21 @@ jobs:
           channel: 'stable'
           cache: false
 
-      # 3️⃣ Verify Flutter & Dart versions
-      - name: Flutter & Dart version
+      # 4️⃣ Check versions (must show Dart 3.9.x)
+      - name: Check Flutter & Dart version
         run: |
           flutter --version
           dart --version
 
-      # 4️⃣ Get dependencies
+      # 5️⃣ Get dependencies
       - name: Get dependencies
         run: flutter pub get
 
-      # 5️⃣ Build iOS app (no signing)
+      # 6️⃣ Build iOS app without signing
       - name: Build iOS (no codesign)
         run: flutter build ios --release --no-codesign
 
-      # 6️⃣ Upload compiled iOS app
+      # 7️⃣ Upload iOS build artifact
       - name: Upload iOS build artifact
         uses: actions/upload-artifact@v4
         with:
