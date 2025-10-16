@@ -11,30 +11,25 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      # 1️⃣ Checkout your repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Flutter
-      - name: Install Flutter
+      - name: Install Flutter (master)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.0-0.2.pre'
-          channel: 'beta'
+          channel: 'master'
 
-      # 3️⃣ Confirm Flutter setup
-      - name: Flutter Doctor
-        run: flutter doctor -v
+      - name: Check Flutter & Dart versions
+        run: |
+          flutter --version
+          dart --version
 
-      # 4️⃣ Install dependencies
       - name: Get dependencies
         run: flutter pub get
 
-      # 5️⃣ Build iOS app (no codesign)
       - name: Build iOS (no codesign)
         run: flutter build ios --release --no-codesign
 
-      # 6️⃣ Upload compiled iOS app artifact
       - name: Upload iOS build
         uses: actions/upload-artifact@v4
         with:
