@@ -12,11 +12,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Flutter (master channel)
+      - name: Setup Flutter (explicit 3.27.3)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'latest'
-          channel: 'master'    # ✅ ensures Dart 3.9.2+
+          flutter-version: '3.27.3'   # ✅ This release ships with Dart 3.9.2
+          channel: 'stable'
 
       - name: Verify Flutter environment
         run: |
