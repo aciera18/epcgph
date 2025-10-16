@@ -12,14 +12,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Flutter (explicit 3.27.3)
+      - name: Setup Flutter (stable base)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.3'   # ✅ This release ships with Dart 3.9.2
+          flutter-version: '3.27.3'
           channel: 'stable'
 
-      - name: Verify Flutter environment
+      - name: Upgrade Flutter to latest master (for Dart 3.9.2+)
         run: |
+          git -C "$(flutter sdk-path)" fetch origin master
+          git -C "$(flutter sdk-path)" checkout master
+          flutter doctor -v
           flutter --version
           dart --version
 
