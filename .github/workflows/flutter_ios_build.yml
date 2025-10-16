@@ -11,43 +11,32 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      # 1️⃣ Checkout your repository
-      - name: Checkout code
+      # 1️⃣ Checkout your repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Remove any preinstalled Flutter versions
-      - name: Remove preinstalled Flutter
-        run: |
-          sudo rm -rf /Users/runner/hostedtoolcache/flutter
-          sudo rm -rf $HOME/flutter
+      # 2️⃣ Setup Flutter
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.3'
+          channel: 'stable'
 
-      # 3️⃣ Install Flutter 3.27.3 (stable)
-     - name: Install Flutter 3.27.3
-        run: |
-            git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter
-            cd $HOME/flutter
-            git fetch --all --tags
-            git checkout 3.27.3 || (echo "❌ Flutter 3.27.3 tag not found"; exit 1)
-            echo "$HOME/flutter/bin" >> $GITHUB_PATH
+      # 3️⃣ Confirm Flutter setup
+      - name: Flutter Doctor
+        run: flutter doctor -v
 
-      # 4️⃣ Verify installation (in a new shell so PATH is reloaded)
-      - name: Verify Flutter & Dart version
-        run: |
-          which flutter
-          flutter --version
-          dart --version
-
-      # 5️⃣ Install dependencies
-      - name: Install dependencies
+      # 4️⃣ Install dependencies
+      - name: Get dependencies
         run: flutter pub get
 
-      # 6️⃣ Build iOS app (no code signing)
+      # 5️⃣ Build iOS app (no codesign)
       - name: Build iOS (no codesign)
         run: flutter build ios --release --no-codesign
 
-      # 7️⃣ Upload iOS build artifact
-      - name: Upload iOS build artifact
+      # 6️⃣ Upload compiled iOS app artifact
+      - name: Upload iOS build
         uses: actions/upload-artifact@v4
         with:
-          name: ios-build
+          name: ios-release-build
           path: build/ios/iphoneos/
