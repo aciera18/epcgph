@@ -22,12 +22,13 @@ jobs:
           sudo rm -rf $HOME/flutter
 
       # 3️⃣ Install Flutter 3.27.3 (stable)
-      - name: Install Flutter 3.27.3
+     - name: Install Flutter 3.27.3
         run: |
-          git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter
-          cd $HOME/flutter
-          git checkout 3.27.3
-          echo "$HOME/flutter/bin" >> $GITHUB_PATH
+            git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter
+            cd $HOME/flutter
+            git fetch --all --tags
+            git checkout 3.27.3 || (echo "❌ Flutter 3.27.3 tag not found"; exit 1)
+            echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
       # 4️⃣ Verify installation (in a new shell so PATH is reloaded)
       - name: Verify Flutter & Dart version
